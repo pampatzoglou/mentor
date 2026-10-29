@@ -1,0 +1,238 @@
+version: '3'
+
+# ──────────────────────────────────────────────────────────────────────────
+# Terraform Taskfile
+#
+# READ-ONLY tasks (safe for AI assistants and automation):
+#   check, fmt, fmt:check, validate, lint, scan, audit, plan, plan:<env>, docs, clean
+#
+# `fmt` rewrites files, so CI runs `fmt:check` instead. `audit` is the full
+# pre-merge gate; `scan` is the security-scan step it calls.
+#
+# MUTATING tasks (run manually after reviewing the plan):
+#   apply:<env>, destroy:<env>
+#
+# Bare `plan` iterates all environments: dev → staging → prod.
+# Bare `apply` / `destroy` do not exist — an explicit env is required
+# to prevent accidental multi-environment mutations.
+# CI runs plans on every PR; applies are gated behind manual approval.
+# ──────────────────────────────────────────────────────────────────────────
+
+tasks:
+  default:
+    desc: List available tasks
+    cmds:
+      - task --list
+
+  init:
+    desc: Initialize Terraform with backend config for an environment
+    cmds:
+      - terraform init -backend-config=backend-{{.TF_ENV}}.hcl -reconfigure
+
+  fmt:
+    desc: Format all Terraform files (rewrites — local use)
+    cmds:
+      - terraform fmt -recursive
+      - echo "✓ Terraform files formatted"
+
+  fmt:check:
+    desc: Fail if any file is unformatted (read-only — this is what CI runs)
+    cmds:
+      - |
+        if ! terraform fmt -check -recursive; then
+          echo "✗ Unformatted files above. Run 'task fmt'."
+          exit 1
+        fi
+        echo "✓ Formatting clean"
+
+  validate:
+    desc: Validate Terraform configuration syntax
+    deps: [fmt:check]
+    cmds:
+      - terraform validate
+      - echo "✓ Terraform configuration valid"
+
+  lint:
+    desc: Quick lint check (tflint only — terminal output, fails fast)
+    deps: [fmt:check, validate]
+    cmds:
+      - tflint --init
+      - tflint --recursive
+      - echo "✓ tflint passed"
+
+  scan:
+    desc: Security scan (tfsec, JSON output) — the standard `scan` task name
+    cmds:
+      - mkdir -p audit-results
+      - echo "→ Running tfsec…"
+      - tfsec . --format=json --out=audit-results/tfsec.json --soft-fail
+
+  audit:
+    desc: 'Full pre-merge gate: fmt:check → validate → lint → scan, JSON output, fails on any finding'
+    deps: [fmt:check, validate]
+    cmds:
+      - mkdir -p audit-results
+      - echo "→ Running tflint…"
+      - tflint --init
+      - 'tflint --recursive --format=json > audit-results/tflint.json || true'
+      - task: scan
+      - echo "→ Summarising findings…"
+      - |
+        TFSEC_COUNT=$(jq '(.results // []) | length' audit-results/tfsec.json 2>/dev/null || echo 0)
+        TFLINT_COUNT=$(jq '(.issues // []) | length' audit-results/tflint.json 2>/dev/null || echo 0)
+        echo ""
+        echo "Audit summary:"
+        echo "  tflint:  $TFLINT_COUNT issue(s)"
+        echo "  tfsec:   $TFSEC_COUNT issue(s)"
+        echo ""
+        echo "JSON: audit-results/tflint.json, audit-results/tfsec.json"
+        echo ""
+        if [ "$TFSEC_COUNT" -gt 0 ] || [ "$TFLINT_COUNT" -gt 0 ]; then
+          echo "✗ Audit FAILED — findings present."
+          echo "  Hand the JSON files to your AI assistant for triage, or inspect them directly."
+          exit 1
+        fi
+        echo "✓ Audit clean — no findings."
+
+  audit:report:
+    desc: Re-print the last audit summary without re-running scanners
+    cmds:
+      - |
+        if [ ! -d audit-results ]; then
+          echo "No audit-results/ directory. Run 'task audit' first."
+          exit 1
+        fi
+        TFSEC_COUNT=$(jq '(.results // []) | length' audit-results/tfsec.json 2>/dev/null || echo 0)
+        TFLINT_COUNT=$(jq '(.issues // []) | length' audit-results/tflint.json 2>/dev/null || echo 0)
+        echo "Last audit:"
+        echo "  tflint:  $TFLINT_COUNT issue(s)"
+        echo "  tfsec:   $TFSEC_COUNT issue(s)"
+
+  # `audit` is the full pre-merge gate (see the `taskfile` skill's standard task set).
+  # `check` is the quick read-only pre-flight — no JSON, no strict failure on findings.
+  check:
+    desc: Quick pre-flight checks (fmt:check, validate, lint) — no security scan
+    cmds:
+      - task: fmt:check
+      - task: validate
+      - task: lint
+
+  # ── Plan — read-only, bare task iterates all environments ────────────────
+
+  plan:
+    desc: Plan all environments (dev → staging → prod)
+    cmds:
+      - task: plan:dev
+      - task: plan:staging
+      - task: plan:prod
+
+  plan:dev:
+    desc: Plan changes for dev
+    cmds:
+      - task: _plan
+        vars: { TF_ENV: dev }
+
+  plan:staging:
+    desc: Plan changes for staging
+    cmds:
+      - task: _plan
+        vars: { TF_ENV: staging }
+
+  plan:prod:
+    desc: Plan changes for production
+    cmds:
+      - task: _plan
+        vars: { TF_ENV: prod }
+
+  _plan:
+    internal: true
+    cmds:
+      - task: init
+        vars: { TF_ENV: "{{.TF_ENV}}" }
+      - terraform validate
+      - terraform plan -var-file=vars/{{.TF_ENV}}.hcl -out=plan-{{.TF_ENV}}.tfplan
+      - echo "✓ Plan generated for {{.TF_ENV}} → plan-{{.TF_ENV}}.tfplan"
+
+  # ── Apply — destructive, explicit env required ───────────────────────────
+
+  apply:dev:
+    desc: Apply changes for dev (run plan:dev first)
+    cmds:
+      - task: _apply
+        vars: { TF_ENV: dev }
+
+  apply:staging:
+    desc: Apply changes for staging (run plan:staging first)
+    cmds:
+      - task: _apply
+        vars: { TF_ENV: staging }
+
+  apply:prod:
+    desc: Apply changes for production (run plan:prod first)
+    cmds:
+      - task: _apply
+        vars: { TF_ENV: prod }
+
+  _apply:
+    internal: true
+    preconditions:
+      - sh: test -f plan-{{.TF_ENV}}.tfplan
+        msg: 'No plan file found for {{.TF_ENV}}. Run `task plan:{{.TF_ENV}}` first.'
+    cmds:
+      - task: init
+        vars: { TF_ENV: "{{.TF_ENV}}" }
+      - terraform apply plan-{{.TF_ENV}}.tfplan
+      - rm plan-{{.TF_ENV}}.tfplan
+      - echo "✓ Applied changes for {{.TF_ENV}}"
+
+  # ── Destroy — destructive, explicit env required, confirmation prompt ────
+
+  destroy:dev:
+    desc: Destroy dev infrastructure
+    prompt: 'Destroy ALL resources in dev. Are you absolutely sure?'
+    cmds:
+      - task: _destroy
+        vars: { TF_ENV: dev }
+
+  destroy:staging:
+    desc: Destroy staging infrastructure
+    prompt: 'Destroy ALL resources in staging. Are you absolutely sure?'
+    cmds:
+      - task: _destroy
+        vars: { TF_ENV: staging }
+
+  destroy:prod:
+    desc: Destroy production infrastructure
+    prompt: 'Destroy ALL resources in prod. Are you absolutely sure?'
+    cmds:
+      - task: _destroy
+        vars: { TF_ENV: prod }
+
+  _destroy:
+    internal: true
+    cmds:
+      - task: init
+        vars: { TF_ENV: "{{.TF_ENV}}" }
+      - terraform destroy -var-file=vars/{{.TF_ENV}}.hcl
+
+  # ── Utilities ─────────────────────────────────────────────────────────────
+
+  docs:
+    desc: Regenerate module READMEs with terraform-docs
+    cmds:
+      - |
+        for dir in modules/*/; do
+          terraform-docs markdown table --output-file README.md "$dir"
+        done
+      - echo "✓ Module documentation regenerated"
+
+  clean:
+    desc: Remove local Terraform artifacts (does NOT touch remote state)
+    cmds:
+      # .terraform.lock.hcl is intentionally NOT removed — it is committed and pins
+      # provider versions. Deleting it silently unpins every provider on the next init.
+      # To deliberately re-resolve: terraform init -upgrade
+      - rm -rf .terraform
+      - rm -f plan-*.tfplan
+      - rm -rf audit-results
+      - echo "✓ Local artifacts cleaned (.terraform.lock.hcl preserved)"

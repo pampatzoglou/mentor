@@ -1,0 +1,34 @@
+repos:
+  - repo: local
+    hooks:
+      # fmt:check, not fmt: a rewriting hook edits the working tree *after* the
+      # index was built, so the commit lands unformatted while your tree looks fine.
+      # Failing tells you to run `task fmt` and re-stage.
+      - id: terraform-fmt
+        name: Terraform format check
+        entry: devbox run task fmt:check
+        language: system
+        pass_filenames: false
+        files: \.tf$
+
+      - id: terraform-validate
+        name: Terraform validate
+        entry: devbox run task validate
+        language: system
+        pass_filenames: false
+        files: \.tf$
+
+      - id: terraform-lint
+        name: Terraform lint (fast)
+        entry: devbox run task lint
+        language: system
+        pass_filenames: false
+        files: \.tf$
+
+      - id: terraform-audit
+        name: Terraform audit (tflint + tfsec, strict)
+        entry: devbox run task audit
+        language: system
+        pass_filenames: false
+        files: \.tf$
+        stages: [pre-push]   # Heavier; run on push rather than every commit

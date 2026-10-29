@@ -1,0 +1,23 @@
+{
+  "name": "mentor",
+  "owner": {
+    "name": "pampatzoglou",
+    "url": "https://github.com/pampatzoglou"
+  },
+  "metadata": {
+    "description": "Opinionated platform engineering & DevSecOps skills for coding agents.",
+    "version": "0.1.0"
+  },
+  "plugins": [
+    {
+      "name": "mentor",
+      "source": "./plugins/mentor",
+      "description": "Platform engineering skills: Terraform, Helm, Kubernetes, CI, devex and tagging conventions."
+    },
+    {
+      "name": "personas",
+      "source": "./plugins/personas",
+      "description": "Slash commands that adopt an engineering persona (SRE, architect, DBA, ...)."
+    }
+  ]
+}

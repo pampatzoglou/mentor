@@ -1,0 +1,10 @@
+{
+  "name": "personas",
+  "version": "0.1.0",
+  "description": "Slash commands that adopt an engineering persona (SRE, architect, DBA, ...).",
+  "author": {
+    "name": "pampatzoglou"
+  },
+  "license": "Apache-2.0",
+  "keywords": ["personas", "commands"]
+}
