@@ -1,7 +1,9 @@
 ---
 name: architecture
-description: 'Choose and defend a system architecture — decomposition style, integration style, and where the boundaries go. Use when a design question is open: whether to split or merge services, sync or async between components, which component owns which data, how to evolve a monolith, how services exchange state, or when a decision needs recording as an ADR. Neutral on style: it supplies the forces, the selection procedure, and the tradeoff method, not a house default. Also covers the guarantees a boundary makes about data crossing it — integrity versus timeliness, system of record versus derived, replication anomalies, compatibility, idempotence. Triggers on architecture, system design, service boundaries, bounded context, coupling, decomposition, monolith vs microservices, event-driven, CQRS, event sourcing, saga, outbox, ADR, eventual consistency, replication lag, read-your-writes, linearizability, CAP, schema evolution, backward compatibility, exactly-once, idempotency, system of record.'
-requires: [document]
+description: 'Choose and defend a system architecture — decomposition style, integration style, and where the boundaries go. Use when a design question is open: split or merge services, sync or async between components, which component owns which data, how to evolve a monolith, or when a decision needs recording as an ADR. Neutral on style: supplies the forces, selection procedure and tradeoff method, not a house default. Also covers the guarantees a boundary makes about data crossing it. Triggers on system design, service boundaries, bounded context, coupling, monolith vs microservices, event-driven, CQRS, event sourcing, saga, outbox, ADR, eventual consistency, replication lag, read-your-writes, CAP, schema evolution, backward compatibility, exactly-once, idempotency, system of record.'
+license: Apache-2.0
+metadata:
+  requires: document
 ---
 
 # Architecture

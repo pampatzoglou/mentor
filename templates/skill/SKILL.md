@@ -1,7 +1,9 @@
 ---
 name: skill-name
-description: 'What the skill does and when to use it. List concrete triggers (file names, tools, phrases) so the model knows when to load it.'
-requires: []
+description: 'What the skill does, then when to use it. Use when <concrete situations>. Triggers on <file names, tools, phrases>. Keep it under 1024 characters.'
+license: Apache-2.0
+metadata:
+  requires: other-skill another-skill
 ---
 
 # Skill Title
@@ -15,8 +17,10 @@ One paragraph: the problem this skill solves and the house stance it takes.
 
 ## Conventions
 
-The rules this skill enforces. Keep SKILL.md lean; move long reference material into sibling
-`.md` files and link them, e.g. [patterns](patterns.md).
+The rules this skill enforces. Keep SKILL.md under 500 lines; move long reference material into
+sibling `.md` files and link them, e.g. [patterns](patterns.md). A reference file over 100 lines
+opens with a `## Contents` section. Template files go in `assets/` under plain names
+(`assets/gitignore`, not `.gitignore`).
 
 ## Workflow
 

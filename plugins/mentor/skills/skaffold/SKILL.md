@@ -1,7 +1,9 @@
 ---
 name: skaffold
-description: Skaffold + kind for local development inner loop. Image sideloading to kind without a registry, canonical skaffold.yaml, devbox cluster scripts, and when skaffold is and isn't the right tool.
-requires: [devbox, helm]
+description: 'Skaffold + kind for the local development inner loop: image sideloading to kind without a registry, the canonical skaffold.yaml, devbox cluster scripts, and when skaffold is and isn''t the right tool. Use when adding or editing skaffold.yaml, setting up a local kind cluster, getting images into kind, or choosing between skaffold and docker-compose for local dev. Triggers on skaffold, kind, "skaffold dev", "local cluster", "inner loop".'
+license: Apache-2.0
+metadata:
+  requires: devbox helm
 ---
 
 # Skaffold (local dev with kind)

@@ -1,0 +1,43 @@
+version: "3"
+
+vars:
+  PLUGIN: plugins/mentor
+  EVAL_RUNS: '{{.EVAL_RUNS | default "3"}}'
+  # A case passes when at least 2 of its 3 runs route to the expected skill.
+  EVAL_THRESHOLD: '{{.EVAL_THRESHOLD | default "0.66"}}'
+
+tasks:
+  check:
+    desc: Run every gate CI runs — validate, lint and the routing evals
+    cmds:
+      - task: check:static
+      - task: eval
+
+  check:static:
+    desc: Run the gates that need no model calls
+    cmds:
+      - task: validate
+      - task: lint
+
+  validate:
+    desc: Validate the marketplace and plugin manifests
+    cmds:
+      - claude plugin validate .
+      - claude plugin validate {{.PLUGIN}}
+
+  lint:
+    desc: Lint skill frontmatter, body size, reference TOCs, links and licensing
+    cmds:
+      - python3 scripts/lint-skills.py
+
+  eval:
+    desc: Run the prompt → expected-skill routing evals against the mentor plugin
+    cmds:
+      - >-
+        claude plugin eval {{.PLUGIN}}
+        --ablation none
+        --runs {{.EVAL_RUNS}}
+        --threshold {{.EVAL_THRESHOLD}}
+        --concurrency 4
+        --no-publish
+        {{.CLI_ARGS}}

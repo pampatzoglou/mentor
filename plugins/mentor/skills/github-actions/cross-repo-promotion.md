@@ -1,5 +1,14 @@
 # GitHub Actions — Cross-repo promotion (service repo → GitOps repo)
 
+## Contents
+
+- [Pick one topology — these two are mutually exclusive](#pick-one-topology--these-two-are-mutually-exclusive)
+- [Credentials: one scoped App token, nothing else](#credentials-one-scoped-app-token-nothing-else)
+- [Keep it DRY — iterate charts, don't enumerate services](#keep-it-dry--iterate-charts-dont-enumerate-services)
+- [Canonical promotion job](#canonical-promotion-job)
+- [Notes](#notes)
+- [Common failures](#common-failures)
+
 Companion to `SKILL.md` (foundations: core pattern, security, matrix, caching). This file covers the **merge-time** deploy half of Kubernetes delivery: moving a freshly built image tag from a **service repo** into the separate **GitOps repo** ArgoCD watches. For the **PR-time** checks (lint/template/audit) see `kubernetes-ci.md`.
 
 The service repo owns the chart definitions under `deploy/charts/`; the promotion job syncs them into the GitOps repo's deploy branch, bumps `image.tag` in the target environment's values layer, then opens and auto-merges a PR.

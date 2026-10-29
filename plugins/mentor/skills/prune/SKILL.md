@@ -1,6 +1,7 @@
 ---
 name: prune
-description: 'Find dead and unused code — unreferenced Helm values, unused Terraform variables/outputs/locals, orphaned files, commented-out blocks, and leftover scaffolding. Prioritises AI context bloat: verbose comments, duplicate docs, large auto-generated files, and anything that consumes tokens without informing understanding.'
+description: 'Find dead and unused code — unreferenced Helm values, unused Terraform variables/outputs/locals, orphaned files, commented-out blocks, and leftover scaffolding — prioritising AI context bloat: verbose comments, duplicate docs, large generated files, anything that costs tokens without informing understanding. Use when asked to find or remove dead code, unused values or variables, orphaned files, or to shrink what an agent has to read. Triggers on "dead code", "unused", "prune", "leftovers", "context bloat".'
+license: Apache-2.0
 ---
 
 # Prune

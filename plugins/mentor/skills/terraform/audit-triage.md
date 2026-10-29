@@ -1,5 +1,16 @@
 # Audit Triage
 
+## Contents
+
+- [The division of labour](#the-division-of-labour)
+- [When to offer an audit](#when-to-offer-an-audit)
+- [Triage procedure](#triage-procedure)
+- [Severity calibration](#severity-calibration)
+- [Suppressions (when a finding is genuinely a false positive)](#suppressions-when-a-finding-is-genuinely-a-false-positive)
+- [Findings that map to skill rules](#findings-that-map-to-skill-rules)
+- [What Claude must NOT do](#what-claude-must-not-do)
+- [Reporting back to the user](#reporting-back-to-the-user)
+
 How to help the user work through findings produced by `task audit`. Read this when:
 
 - The user has just run `task audit` and it failed

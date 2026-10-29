@@ -1,6 +1,7 @@
 ---
 name: devbox
-description: 'Reproducible developer environments via pinned Nix packages. Covers .envrc setup with direnv, devbox.json structure, pinning strategy, and an init_hook that performs SSO login (when available) and pulls required dev secrets from Vault on shell entry. devbox.json is also the declared source of truth for tool versions that CI must match — CI itself does not run devbox.'
+description: 'Reproducible developer environments via pinned Nix packages: devbox.json structure, pinning strategy, .envrc with direnv, and an init_hook that performs SSO login (when available) and pulls dev secrets from Vault on shell entry. devbox.json is the source of truth for tool versions that CI must match; CI itself does not run devbox. Use when adding or editing devbox.json or .envrc, pinning or bumping a tool version, setting up direnv, or onboarding a developer shell. Triggers on devbox, direnv, .envrc, "dev environment", "pin a tool".'
+license: Apache-2.0
 ---
 
 # Devbox

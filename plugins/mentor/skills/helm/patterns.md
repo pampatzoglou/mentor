@@ -1,5 +1,36 @@
 # Helm — Patterns & Requirements
 
+## Contents
+
+- [Image construction](#image-construction)
+- [ExternalSecret toggle pattern](#externalsecret-toggle-pattern)
+- [Credential file mounts](#credential-file-mounts)
+- [extraObjects — arbitrary manifest escape hatch](#extraobjects--arbitrary-manifest-escape-hatch)
+- [ConfigMap](#configmap)
+- [Config & Secret checksum annotations](#config--secret-checksum-annotations)
+- [Downward API metadata injection](#downward-api-metadata-injection)
+- [Environment variable ordering](#environment-variable-ordering)
+- [Scheduling fields](#scheduling-fields)
+- [Volumes and volumeMounts pass-through](#volumes-and-volumemounts-pass-through)
+- [Deployment strategy](#deployment-strategy)
+- [Liveness probe patterns](#liveness-probe-patterns)
+- [Defaults layer — operational baseline](#defaults-layer--operational-baseline)
+- [Deployment template skeleton](#deployment-template-skeleton)
+- [Service template](#service-template)
+- [Component label — required on every workload](#component-label--required-on-every-workload)
+- [Multi-deployment charts](#multi-deployment-charts)
+- [Workload variants](#workload-variants)
+- [Validation patterns for CRD templates](#validation-patterns-for-crd-templates)
+- [Observability — monitoring templates](#observability--monitoring-templates)
+- [HPA template](#hpa-template)
+- [PDB template](#pdb-template)
+- [Gateway API — HTTPRoute](#gateway-api--httproute)
+- [Operational labels](#operational-labels)
+- [ServiceAccount template](#serviceaccount-template)
+- [RBAC](#rbac)
+- [NetworkPolicy](#networkpolicy)
+- [Patterns checklist](#patterns-checklist)
+
 Recurring template patterns and operational requirements for Helm charts. Companion to `SKILL.md` (foundations). For Kubernetes resource-level standards see the `kubernetes` skill's `resource-standards.md`.
 
 ---

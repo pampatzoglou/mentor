@@ -1,6 +1,7 @@
 ---
 name: debugging
-description: Systematic debugging methodology — reproduce, isolate, hypothesize, test, fix, verify. Use when a bug reproduces, a test fails, a stack trace or error message needs root-causing, or behaviour differs across environments (dev vs CI vs prod). Includes checklists for environment, concurrency, resources, data, permissions, and Nix-specific issues. For the reproduce/verify steps the built-in /run and /verify skills can drive the actual app.
+description: 'Systematic debugging methodology — reproduce, isolate, hypothesize, test, fix, verify. Use when a bug reproduces, a test fails, a stack trace or error message needs root-causing, or behaviour differs across environments (dev vs CI vs prod). Includes checklists for environment, concurrency, resources, data, permissions, and Nix-specific issues. For the reproduce/verify steps the built-in /run and /verify skills can drive the actual app.'
+license: Apache-2.0
 ---
 
 # Debugging Skill

@@ -1,6 +1,7 @@
 ---
 name: git
-description: 'Git workflow helper — crafts Conventional Commit messages and PR overview descriptions. For commits: analyses staged diff, picks the right type/scope, presents a pre-filled git commit command for the user to confirm. For PRs: writes a concise overview description (not a changelog) from the branch diff.'
+description: 'Git workflow helper — Conventional Commit messages and PR overview descriptions. For commits it analyses the staged diff, picks type and scope, and presents a pre-filled git commit command to confirm; for PRs it writes a concise overview (not a changelog) from the branch diff. Use when the user asks for a commit message, to commit staged changes, or to write or update a pull request description. Triggers on "commit", "commit message", "PR description", "open a PR", conventional commits.'
+license: Apache-2.0
 ---
 
 # Git Helper

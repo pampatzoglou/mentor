@@ -1,6 +1,7 @@
 ---
 name: secrets
 description: 'Canonical secret-handling contract across the platform — the Vault path convention, the three credential source modes (chart-internal, external reference, Vault dynamic), the in-container mount path and *_FILE env convention, and the dev-prod parity rule. Use whenever a task involves a credential, password, API key, token, ExternalSecret, VaultDynamicSecret, SecretStore, or a secret reaching a container. Owns the vocabulary that helm, docker-compose, devbox, terraform, and kubernetes all consume; those skills own their own syntax.'
+license: Apache-2.0
 ---
 
 # Secrets

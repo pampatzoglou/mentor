@@ -3,8 +3,17 @@
   "version": "0.1.0",
   "description": "Platform engineering skills: Terraform, Helm, Kubernetes, CI, devex and tagging conventions.",
   "author": {
-    "name": "pampatzoglou"
+    "name": "Pantelis Ampatzoglou",
+    "url": "https://github.com/pampatzoglou"
   },
   "license": "Apache-2.0",
-  "keywords": ["platform-engineering", "devsecops", "terraform", "helm", "kubernetes"]
+  "keywords": [
+    "platform-engineering",
+    "devsecops",
+    "terraform",
+    "helm",
+    "kubernetes"
+  ],
+  "homepage": "https://github.com/pampatzoglou/mentor",
+  "repository": "https://github.com/pampatzoglou/mentor"
 }

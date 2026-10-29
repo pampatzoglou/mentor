@@ -1,7 +1,9 @@
 ---
 name: docker-compose
 description: 'Author docker-compose.yaml for the local development inner loop, built to mirror how the workload runs in Kubernetes. Use when adding or editing a compose file, setting up local dev for a service, or running docker compose up. Every service gets named volumes (like PVCs/emptyDir), file-based secrets mounted at the same nested path the chart uses via the *_FILE env convention (the `secrets` skill owns that contract), and a securityContext-equivalent hardening block (read_only, tmpfs, cap_drop, no-new-privileges, non-root user). Triggers on docker-compose, compose.yaml, docker compose, "local dev environment", "run it locally".'
-requires: [dockerfile, secrets]
+license: Apache-2.0
+metadata:
+  requires: dockerfile secrets
 ---
 
 # docker-compose for local dev (Kubernetes-parity)

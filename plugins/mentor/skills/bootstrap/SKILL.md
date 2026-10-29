@@ -1,7 +1,9 @@
 ---
 name: bootstrap
-description: Scaffold a new project repository — directory structure, .gitignore, and sequenced skill invocation (devbox → taskfile → helm → ci → document). Handles single-service and multi-service monorepo layouts.
-requires: [devbox, taskfile, helm, ci, document]
+description: 'Scaffold a new project repository — directory structure, .gitignore, and sequenced skill invocation (devbox → taskfile → helm → ci → document) for single-service and multi-service monorepo layouts. Use when starting a repository or service from nothing: "new repo", "scaffold a project", "set up a monorepo", "start a new service". To bring an existing repo up to the conventions use housekeeping instead.'
+license: Apache-2.0
+metadata:
+  requires: devbox taskfile helm ci document
 ---
 
 # Bootstrap

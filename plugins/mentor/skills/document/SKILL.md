@@ -1,6 +1,7 @@
 ---
 name: document
-description: 'Analyze a repository and generate or update its documentation suite — README.md, docs/ARCHITECTURE.md (with embedded Mermaid diagrams), and any domain-specific docs (module READMEs for Terraform, chart READMEs for Helm, API docs for services). Interactive: analyzes first, presents findings, generates based on confirmed choices.'
+description: 'Analyze a repository and generate or update its documentation suite — README.md, docs/ARCHITECTURE.md with embedded Mermaid diagrams, and domain-specific docs (module READMEs for Terraform, chart READMEs for Helm, API docs for services). Interactive: analyzes first, presents findings, generates from confirmed choices. Use when writing or refreshing a README or architecture doc, adding diagrams, or when docs have drifted from the code. Triggers on "document this repo", "update the README", "architecture doc", "mermaid diagram".'
+license: Apache-2.0
 ---
 
 # Document

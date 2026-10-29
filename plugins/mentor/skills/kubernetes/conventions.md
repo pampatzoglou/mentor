@@ -1,5 +1,18 @@
 # Team Conventions
 
+## Contents
+
+- [Two repo types](#two-repo-types)
+- [Values file hierarchy](#values-file-hierarchy)
+- [CHAIN overlay (this team's third-axis values overlay)](#chain-overlay-this-teams-third-axis-values-overlay)
+- [ArgoCD sync waves](#argocd-sync-waves)
+- [ApplicationSet pattern (services repo)](#applicationset-pattern-services-repo)
+- [Templating locally](#templating-locally)
+- [Priority classes](#priority-classes)
+- [Component placement: which wave for what](#component-placement-which-wave-for-what)
+- [CRD handling](#crd-handling)
+- [Pre-commit checks](#pre-commit-checks)
+
 This file describes a specific team's GitOps platform conventions. Apply these only when the user is working in a repo that follows them. Tells:
 - A `defaults/values.yaml` next to environment dirs (`dev/`, `prod/`) inside a chart
 - ArgoCD `Application`/`ApplicationSet` files with `argocd.argoproj.io/sync-wave` annotations

@@ -1,5 +1,16 @@
 # Troubleshooting Kubernetes Workloads
 
+## Contents
+
+- [Pod is not Running](#pod-is-not-running)
+- [PVC stuck `Pending`](#pvc-stuck-pending)
+- [ArgoCD Application not syncing](#argocd-application-not-syncing)
+- [Service has no endpoints](#service-has-no-endpoints)
+- [Pod is Running but unreachable](#pod-is-running-but-unreachable)
+- ["It worked yesterday"](#it-worked-yesterday)
+- [Useful one-liners](#useful-one-liners)
+- [When to escalate vs keep digging](#when-to-escalate-vs-keep-digging)
+
 Symptom-first decision trees. Match the user's symptom to a section, then walk it.
 
 ## Pod is not Running

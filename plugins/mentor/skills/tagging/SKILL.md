@@ -1,7 +1,9 @@
 ---
 name: tagging
-description: Canonical metadata and tagging taxonomy for infrastructure resources, applied consistently across Terraform, AWS, Docker/OCI images, GitHub, ArgoCD, Vault, Prometheus, Loki, and OpenTelemetry. Use when defining or reviewing tags, labels, or metadata on any of those platforms, designing a tagging strategy, or wiring up cost allocation and dashboards that depend on consistent keys. For Kubernetes workload labels the `helm` and `kubernetes` skills own the contract — this skill supplies the values they consume, it does not redefine the label set.
-requires: [helm, kubernetes]
+description: 'Canonical metadata and tagging taxonomy for infrastructure resources, applied consistently across Terraform, AWS, Docker/OCI images, GitHub, ArgoCD, Vault, Prometheus, Loki, and OpenTelemetry. Use when defining or reviewing tags, labels, or metadata on any of those platforms, designing a tagging strategy, or wiring up cost allocation and dashboards that depend on consistent keys. For Kubernetes workload labels the `helm` and `kubernetes` skills own the contract — this skill supplies the values they consume, it does not redefine the label set.'
+license: Apache-2.0
+metadata:
+  requires: helm kubernetes
 ---
 
 # Resource Tagging

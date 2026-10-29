@@ -1,5 +1,16 @@
 # Boundaries — Finding the Seams
 
+## Contents
+
+- [The seven tests](#the-seven-tests)
+- [Where boundaries genuinely belong](#where-boundaries-genuinely-belong)
+- [Where boundaries do not belong](#where-boundaries-do-not-belong)
+- [Techniques for finding boundaries](#techniques-for-finding-boundaries)
+- [Building a seam you can move](#building-a-seam-you-can-move)
+- [Contracts across the boundary](#contracts-across-the-boundary)
+- [Sharing data across the boundary](#sharing-data-across-the-boundary)
+- [Moving a boundary that already exists](#moving-a-boundary-that-already-exists)
+
 A boundary is not a line on a diagram. It is a claim that **two things can change
 independently**. Everything here exists to test that claim before you commit deployment topology,
 team structure, and data ownership to it.

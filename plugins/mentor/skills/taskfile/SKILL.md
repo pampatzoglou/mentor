@@ -1,6 +1,7 @@
 ---
 name: taskfile
-description: 'Standard Taskfile conventions across all projects. Covers the core principle (CI calls tasks not inline commands), standard task naming, the action:env convention, the variables pattern, and CI integration.'
+description: 'Standard Taskfile conventions across all projects: CI calls tasks rather than inline commands, standard task names, the action:env convention (template:dev, audit:prod), the variables pattern, and CI integration. Use when creating or editing Taskfile.yml / Taskfile.yaml, adding or renaming tasks, or moving inline CI or README commands into tasks. Triggers on Taskfile, go-task, "task check", "task lint", "add a task".'
+license: Apache-2.0
 ---
 
 # Taskfile
