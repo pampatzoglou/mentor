@@ -1,7 +1,9 @@
 ---
 name: argo-applicationset
-description: Author ArgoCD ApplicationSets for service repos. Covers Go template syntax, matrix generators (apps × envs, apps × variants), values file layering, managedNamespaceMetadata labels, sync waves, singleton vs variant split, and the app-of-apps connection.
-requires: [helm, kubernetes]
+description: 'Author ArgoCD ApplicationSets for service repos: Go template syntax, matrix generators (apps × envs, apps × variants), values file layering, managedNamespaceMetadata labels, sync waves, singleton vs variant split, and the app-of-apps connection. Use when adding or editing an ApplicationSet or app-of-apps manifest, adding an environment or variant to a GitOps repo, or debugging generator output. Triggers on ApplicationSet, "matrix generator", goTemplate, "app of apps", "add an environment".'
+license: Apache-2.0
+metadata:
+  requires: helm kubernetes
 ---
 
 # ArgoCD ApplicationSet

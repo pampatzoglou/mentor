@@ -1,5 +1,14 @@
 # GitHub Actions — Kubernetes CI
 
+## Contents
+
+- [Standard matrix](#standard-matrix)
+- [Render check](#render-check)
+- [Third-axis matrix (when applicable)](#third-axis-matrix-when-applicable)
+- [Canonical Kubernetes ci.yaml](#canonical-kubernetes-ciyaml)
+- [Branch protection](#branch-protection)
+- [Common Kubernetes CI failures](#common-kubernetes-ci-failures)
+
 Companion to `SKILL.md` (foundations: core pattern, security, matrix, caching). This file covers **PR-time** CI for repos that deploy Helm charts — lint, template, and audit run as a matrix over environments. For the **merge-time** deploy half (promoting image tags into a GitOps repo) see `cross-repo-promotion.md`.
 
 ## Standard matrix

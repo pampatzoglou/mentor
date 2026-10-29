@@ -1,5 +1,26 @@
 # Architectural Styles — Catalog
 
+## Contents
+
+- [Read this first: three orthogonal axes](#read-this-first-three-orthogonal-axes)
+- [Single-process monolith](#single-process-monolith)
+- [Modular monolith](#modular-monolith)
+- [Services](#services)
+- [Functions](#functions)
+- [Synchronous request/response](#synchronous-requestresponse)
+- [Asynchronous command](#asynchronous-command)
+- [Event notification](#event-notification)
+- [Event-carried state transfer](#event-carried-state-transfer)
+- [Shared database](#shared-database)
+- [Log-based change data capture](#log-based-change-data-capture)
+- [Batch transfer](#batch-transfer)
+- [Saga](#saga)
+- [Outbox](#outbox)
+- [Layered](#layered)
+- [Hexagonal (ports and adapters)](#hexagonal-ports-and-adapters)
+- [CQRS](#cqrs)
+- [Event sourcing](#event-sourcing)
+
 Neutral by design. Each entry states the forces that favour it, the forces that kill it, how it
 fails in practice, and what it costs to leave. No entry is the default.
 

@@ -1,5 +1,19 @@
 # Data-Intensive Reasoning
 
+## Contents
+
+- [The master heuristic: integrity over timeliness](#the-master-heuristic-integrity-over-timeliness)
+- [System of record versus derived data](#system-of-record-versus-derived-data)
+- [Describing load and latency honestly](#describing-load-and-latency-honestly)
+- [Replication lag is three different problems](#replication-lag-is-three-different-problems)
+- [Invariants across a boundary have no isolation level](#invariants-across-a-boundary-have-no-isolation-level)
+- [Consistency claims not to overstate](#consistency-claims-not-to-overstate)
+- [Compatibility is two directions, both required at once](#compatibility-is-two-directions-both-required-at-once)
+- [Log versus queue is an architectural choice](#log-versus-queue-is-an-architectural-choice)
+- [Exactly-once does not exist at the transport; idempotence does](#exactly-once-does-not-exist-at-the-transport-idempotence-does)
+- [Assumptions the network will not honour](#assumptions-the-network-will-not-honour)
+- [Questions at every data-crossing boundary](#questions-at-every-data-crossing-boundary)
+
 The criteria that decide a boundary once data crosses it. Distilled from *Designing
 Data-Intensive Applications* (Kleppmann) and reframed as design tests rather than as a summary —
 the value here is the questions, not the taxonomy.

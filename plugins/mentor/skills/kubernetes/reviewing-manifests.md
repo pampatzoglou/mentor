@@ -1,5 +1,13 @@
 # Reviewing Kubernetes Manifests
 
+## Contents
+
+- [Review the rendered output, not the base values](#review-the-rendered-output-not-the-base-values)
+- [How to structure feedback](#how-to-structure-feedback)
+- [Checklist](#checklist)
+- [Patterns that warrant deeper review](#patterns-that-warrant-deeper-review)
+- [Output template](#output-template)
+
 Use when the user asks to review, audit, or sanity-check existing YAML — Helm chart, raw manifest, or the rendered output of `helm template`.
 
 ## Review the rendered output, not the base values

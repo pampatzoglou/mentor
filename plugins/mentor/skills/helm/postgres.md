@@ -1,5 +1,13 @@
 # Helm — Postgres Credentials
 
+## Contents
+
+- [Credential values shape](#credential-values-shape)
+- [secrets.yaml](#secretsyaml)
+- [Deployment wiring](#deployment-wiring)
+- [Migration Job with Helm hooks](#migration-job-with-helm-hooks)
+- [Checklist](#checklist)
+
 Postgres credential patterns and migration operations. Companion to `patterns.md` (base patterns) and `SKILL.md` (foundations).
 
 ## Credential values shape

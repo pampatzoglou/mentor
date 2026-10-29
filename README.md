@@ -69,29 +69,47 @@ plugins/
     .claude-plugin/plugin.json
     skills/
       <skill-name>/
-        SKILL.md            # required: frontmatter (name, description, requires) + instructions
+        SKILL.md            # required: frontmatter + instructions, under 500 lines
         <topic>.md          # optional: reference material loaded on demand
-        <template files>    # optional: Taskfile.yml, devbox.json, workflows, ...
+        assets/             # optional: template files under plain names (gitignore, Taskfile.yml)
+    evals/                  # prompt → expected-skill routing cases (claude plugin eval)
+    LICENSE, NOTICE         # copies of the root files; only the plugin directory ships
   personas/                 # persona slash commands
     .claude-plugin/plugin.json
     commands/
       <persona>.md
 templates/
   skill/SKILL.md            # starting point for a new skill
+scripts/lint-skills.py      # frontmatter, size, TOC, link and licensing lint
+Taskfile.yml                # task check — the same gates CI runs
 ```
 
-`requires:` lists the skills a skill builds on. Claude Code does not enforce it; it documents the
-dependency graph. Skills ship in one plugin so installing one always brings its dependencies.
+`metadata.requires` lists the skills a skill builds on, space-separated. Claude Code does not
+enforce it; it documents the dependency graph, and `task lint` checks every name exists. Skills ship in one plugin so installing one always brings its dependencies.
 
 ## Adding a skill
 
 1. `cp -r templates/skill plugins/mentor/skills/<skill-name>`
-2. Set `name` to match the directory and write a trigger-rich `description`.
+2. Set `name` to match the directory. Write the `description` as what the skill does plus when to
+   use it (`Use when ...`, `Triggers on ...`) — it is all the model sees when choosing a skill.
+   Add a case under `plugins/mentor/evals/` for the prompt that should route to it.
 3. If the skill introduces a rule, make it the owner and have other skills reference it rather
    than restate it.
 4. Bump `version` in `plugins/mentor/.claude-plugin/plugin.json`.
-5. Validate: `claude plugin validate .`
+5. Run `task check:static` (validate + lint), then `task eval` for the routing evals.
+
+## Checks
+
+| Task | Runs |
+|---|---|
+| `task validate` | `claude plugin validate` on the marketplace and the mentor plugin |
+| `task lint` | `name` matches the directory; `description` ≤ 1024 chars with a when-clause; `license` present; body < 500 lines; reference files > 100 lines have a `## Contents`; links resolve; no dotfiles in skills; plugin `LICENSE`/`NOTICE` match the root |
+| `task eval` | prompt → expected-skill cases in `plugins/mentor/evals/`, 3 runs each, a case passes at ≥ 2/3 |
+| `task check` | all of the above |
+
+CI (`.github/workflows/check.yml`) runs `task check:static` on every PR and `task eval` when the
+`ANTHROPIC_API_KEY` secret is available.
 
 ## License
 
-Apache-2.0
+Apache-2.0. Copyright 2026 Pantelis Ampatzoglou — see `LICENSE` and `NOTICE`.

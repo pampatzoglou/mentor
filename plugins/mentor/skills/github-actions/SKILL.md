@@ -1,6 +1,7 @@
 ---
 name: github-actions
-description: 'GitHub Actions CI that delegates all job logic to Taskfile tasks. Covers the core checkout + setup-tools + task pattern, the reusable setup-tools composite action and its version parity with devbox.json, SHA pinning, security hardening, OIDC auth, matrix strategies, environment protection, and workflow split (PR vs merge vs release). CI does not use devbox — that is the developer environment; CI installs the same pinned versions via setup actions.'
+description: 'GitHub Actions CI that delegates all job logic to Taskfile tasks: the checkout + setup-tools + task pattern, the reusable setup-tools composite action and its version parity with devbox.json, SHA pinning, security hardening, OIDC auth, matrix strategies, environment protection, and the PR / merge / release workflow split. Use when editing files under .github/workflows/ or .github/actions/, pinning actions by SHA, setting permissions, wiring OIDC to a cloud, or adding a matrix or environment gate. For generating a repo''s CI from scratch use the ci skill.'
+license: Apache-2.0
 ---
 
 # GitHub Actions

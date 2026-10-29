@@ -1,7 +1,9 @@
 ---
 name: ci
 description: 'Generate CI workflows for a repository by analyzing its structure and asking about preferences, then writing GitHub Actions that install pinned tools and delegate job logic to Taskfile tasks. Use when setting up or revising continuous integration, adding or editing .github/workflows/, wiring test/lint/build/release pipelines, or making CI call project tasks. Orchestrates the github-actions, taskfile, and devbox skills.'
-requires: [github-actions, taskfile, devbox]
+license: Apache-2.0
+metadata:
+  requires: github-actions taskfile devbox
 ---
 
 # Generate CI Workflows

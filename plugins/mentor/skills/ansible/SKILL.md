@@ -1,7 +1,9 @@
 ---
 name: ansible
 description: 'Author, review and run Ansible roles and playbooks in the house style: one role = one inventory group = one play, install/configure/service/verify task split, `<role>_` variable prefix, `<role>:<phase>` tags, drop-in integration with Alloy / Prometheus rules / Falco / nftables / logrotate / Traefik / Grafana / Vault Agent tracked by `<role>_*_applied` facts and removed by a cleanup play, checksum-verified upstream binaries pinned for Renovate, and Molecule scenarios with systemd-in-Docker. Use whenever a task touches roles/, playbooks/, inventory/, group_vars/host_vars, molecule/, ansible.cfg, ansible-lint, or asks to add a role/server type, wire a role into monitoring, or run check/provision/verify.'
-requires: [taskfile, devbox]
+license: Apache-2.0
+metadata:
+  requires: taskfile devbox
 ---
 
 # Ansible (fleet provisioning)

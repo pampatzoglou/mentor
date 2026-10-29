@@ -1,6 +1,7 @@
 ---
 name: tidy
-description: Hunt for mechanical inconsistencies — missing separators, empty template variables, trailing whitespace, inconsistent quoting, mixed indentation, and similar style drift across Helm, Terraform, YAML, Go, and Python.
+description: 'Hunt for mechanical inconsistencies — missing separators, empty template variables, trailing whitespace, inconsistent quoting, mixed indentation, and similar style drift across Helm, Terraform, YAML, Go and Python. Use when asked to tidy or normalize style across a repo or diff, or when a review flags formatting drift. Triggers on "tidy", "whitespace", "quoting", "indentation", "style drift", "inconsistent formatting".'
+license: Apache-2.0
 ---
 
 # Tidy

@@ -1,6 +1,7 @@
 ---
 name: helm
-description: Helm chart authoring — chart anatomy, values file layering (values.yaml → defaults/ → env/ → overlay), _helpers.tpl, template foundations, and local validation.
+description: 'Helm chart authoring — chart anatomy, values file layering (values.yaml → defaults/ → env/ → overlay), _helpers.tpl, template foundations, workload, observability, RBAC and NetworkPolicy template patterns, and local validation. Use when creating or editing a Helm chart: Chart.yaml, values.yaml or a values overlay, values.schema.json, templates/*.yaml, _helpers.tpl, NOTES.txt, .helmignore, extraObjects or ExternalSecret toggles, or when running helm template / helm lint. Triggers on "helm chart", "values file", "chart template", "helm template", "helm lint".'
+license: Apache-2.0
 ---
 
 # Helm — Foundations
@@ -281,35 +282,10 @@ Default `automount: false`. Workloads that don't talk to the Kubernetes API shou
 
 ## values.schema.json
 
-Recommended for charts with complex or user-facing values. Catches typos and wrong types at `helm lint` / `helm template` time — before manifests reach the cluster. Not every chart needs one on day one, but add one when values grow beyond a handful of keys or when multiple teams consume the chart:
-
-```json
-{
-  "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "type": "object",
-  "required": ["image"],
-  "properties": {
-    "replicaCount": {
-      "type": "integer",
-      "minimum": 0
-    },
-    "image": {
-      "type": "object",
-      "required": ["repository"],
-      "properties": {
-        "repository": { "type": "string" },
-        "tag":        { "type": "string" },
-        "pullPolicy": {
-          "type": "string",
-          "enum": ["Always", "IfNotPresent", "Never"]
-        }
-      }
-    }
-  }
-}
-```
-
-Cover required keys and any key whose type is easy to get wrong. You don't need to be exhaustive.
+Recommended once values grow beyond a handful of keys or more than one team consumes the chart:
+it catches typos and wrong types at `helm lint` / `helm template` time. Cover required keys and
+any key whose type is easy to get wrong; it need not be exhaustive. Starting point:
+[values-schema.md](values-schema.md).
 
 ## _helpers.tpl
 
@@ -460,44 +436,11 @@ Things to look for in rendered output:
 - CRDs render before the resources that depend on them
 - Chart renders cleanly with just `values.yaml` (no overlays) for local kind use
 
-## NOTES.txt
+## NOTES.txt and .helmignore
 
-Optional but recommended. Rendered after `helm install` / `helm upgrade` to show useful post-install information:
-
-```gotmpl
-{{- $fullName := include "my-chart.fullname" . -}}
-1. Application deployed: {{ $fullName }}
-   Namespace: {{ .Release.Namespace }}
-
-2. Check status:
-   kubectl get pods -l app.kubernetes.io/instance={{ .Release.Name }} -n {{ .Release.Namespace }}
-```
-
-Include kubectl commands to verify the deployment, access logs, or port-forward to the service. Keep it short — this is what the operator sees immediately after deploy.
-
-## .helmignore
-
-Exclude non-chart files from the Helm package to keep it clean and avoid leaking development artifacts:
-
-```
-.DS_Store
-.git/
-.gitignore
-.idea/
-.vscode/
-*.swp
-*.bak
-*.tmp
-*.orig
-*~
-__pycache__/
-*.pyc
-chart/
-docs/
-README.md
-```
-
-Include `README.md` in `.helmignore` — it's for humans reading the repo, not for the Helm package. Include language-specific artifacts (`__pycache__/`, `node_modules/`, etc.) relevant to the project.
+Add a short `NOTES.txt` with the kubectl commands an operator needs right after deploy, and a
+`.helmignore` that keeps repo-only files (README, editor state, language artifacts) out of the
+package. Templates for both are in [chart-files.md](chart-files.md).
 
 ## Completion checklist
 

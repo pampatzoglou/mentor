@@ -1,5 +1,12 @@
 # Helm — Kafka Credentials
 
+## Contents
+
+- [Credential values shape](#credential-values-shape)
+- [secrets.yaml](#secretsyaml)
+- [Deployment wiring](#deployment-wiring)
+- [Checklist](#checklist)
+
 Kafka SASL credential patterns. Companion to `patterns.md` (base patterns) and `SKILL.md` (foundations).
 
 ## Credential values shape

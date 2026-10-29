@@ -1,5 +1,13 @@
 # Helm chart Taskfile
 
+## Contents
+
+- [Core variables](#core-variables)
+- [Task naming](#task-naming)
+- [Output directories](#output-directories)
+- [Canonical Helm Taskfile.yaml](#canonical-helm-taskfileyaml)
+- [Kubescape configuration](#kubescape-configuration)
+
 Load this when the repo deploys Helm charts (a `deploy/charts/` directory exists). It extends the core conventions in `SKILL.md` with `template`, `lint`, and `audit` tasks following the `action:env` naming convention.
 
 ## Core variables

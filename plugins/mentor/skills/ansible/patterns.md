@@ -1,5 +1,19 @@
 # Ansible integration patterns (copy-paste)
 
+## Contents
+
+- [Alloy config](#alloy-config)
+- [Prometheus rules](#prometheus-rules)
+- [Falco rules](#falco-rules)
+- [nftables (inbound ports)](#nftables-inbound-ports)
+- [logrotate (only for file logs; journald is the default)](#logrotate-only-for-file-logs-journald-is-the-default)
+- [Traefik route](#traefik-route)
+- [Grafana data source / dashboards](#grafana-data-source--dashboards)
+- [Upstream binary install (`tasks/install.yml`)](#upstream-binary-install-tasksinstallyml)
+- [Service (`tasks/service.yml`)](#service-tasksserviceyml)
+- [Once-per-run guard (agent roles pulled in via meta deps)](#once-per-run-guard-agent-roles-pulled-in-via-meta-deps)
+- [Agent-owned cleanup (`roles/<agent>/tasks/cleanup.yml`)](#agent-owned-cleanup-rolesagenttaskscleanupyml)
+
 Replace `<r>` with the role name. Each block lives in `tasks/configure.yml` unless noted.
 
 ## Alloy config

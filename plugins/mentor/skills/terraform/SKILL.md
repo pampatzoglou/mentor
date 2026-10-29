@@ -1,7 +1,9 @@
 ---
 name: terraform
-description: 'Use whenever the user is working with Terraform or HashiCorp Configuration Language (HCL), or asks broadly about "infrastructure", observability strategy, disaster recovery, or cost optimization. Triggers on terraform, .tf files, .tfvars, HCL, "infrastructure as code", "infra", devbox+terraform, or Taskfiles for IaC. IMPORTANT: this skill operates in plan/validate/review mode only — it never applies infrastructure changes.'
-requires: [devbox, taskfile]
+description: 'Author, review and plan Terraform/HCL projects: directory layout, module and variable design, state, secrets via Vault or AWS Secrets Manager, and the devbox/Taskfile/CI setup for an IaC repo. Use when working with .tf or .tfvars files, Terraform modules, providers or state, "infrastructure as code", terraform plan or validate output, or `task audit` (tflint/tfsec) findings. Operates in plan/validate/review mode only — it never applies infrastructure changes.'
+license: Apache-2.0
+metadata:
+  requires: devbox taskfile
 ---
 
 # Terraform Infrastructure as Code
@@ -60,9 +62,9 @@ This boundary applies even when the user has connected credentials, even when th
 |----------------|--------|
 | Starting a new Terraform project | Copy the asset files listed below; produce the full directory structure that follows |
 | Adding/editing a module | Apply "Variable and module design" below; ensure the module README is updated |
-| Writing or fixing a Taskfile | Use this skill's `Taskfile.yml` as the baseline; also read the shared `taskfile` skill for conventions |
-| Writing or fixing devbox.json or .envrc | Use this skill's `devbox.json` as the baseline; also read the shared `devbox` skill |
-| Setting up GitHub Actions or pre-commit | Read the shared `github-actions` skill; use this skill's `github-actions.yml` and `.pre-commit-config.yaml` |
+| Writing or fixing a Taskfile | Use `assets/Taskfile.yml` as the baseline; also read the shared `taskfile` skill for conventions |
+| Writing or fixing devbox.json or .envrc | Use `assets/devbox.json` as the baseline; also read the shared `devbox` skill |
+| Setting up GitHub Actions or pre-commit | Read the shared `github-actions` skill; use `assets/github-actions.yml` and `assets/pre-commit-config.yaml` |
 | Running an audit / triaging `task audit` findings | Read `audit-triage.md` — Claude reads JSON, triages, proposes fixes |
 | Anything involving secrets, credentials, passwords, API keys, tokens | Apply the **Secrets** section below — it has hard rules about consume/persist patterns |
 
@@ -276,16 +278,20 @@ output "db_secret_arn" {
 
 ## Asset files (copy these into the user's project)
 
-These live alongside this `SKILL.md` in the skill directory:
+These live in `assets/` with plain names, so git and config auto-discovery don't treat them as
+live config for the skill directory. Rename on copy:
 
-- `devbox.json` — pinned tool versions
-- `Taskfile.yml` — full standard task set
-- `.gitignore` — covers Terraform, audit, and plan artifacts
-- `.pre-commit-config.yaml` — pre-commit hooks
-- `github-actions.yml` — GitHub Actions workflow
-- `audit-triage.md` — not a template; read it when triaging `task audit` output
+| Asset | Copy to | Purpose |
+|---|---|---|
+| `assets/devbox.json` | `devbox.json` | pinned tool versions |
+| `assets/Taskfile.yml` | `Taskfile.yml` | full standard task set |
+| `assets/gitignore` | `.gitignore` | covers Terraform, audit, and plan artifacts |
+| `assets/pre-commit-config.yaml` | `.pre-commit-config.yaml` | pre-commit hooks |
+| `assets/github-actions.yml` | `.github/workflows/terraform.yml` | GitHub Actions workflow |
 
-When scaffolding, copy the first five verbatim and fill in the project-specific bits (project name, providers, regions). Don't rewrite them from scratch. For `README.md`, `docs/ARCHITECTURE.md`, and `modules/*/README.md`, the `document` skill owns the structure — see **Documentation** above for the Terraform-specific sections to add.
+`audit-triage.md` is not a template; read it when triaging `task audit` output.
+
+When scaffolding, copy the assets verbatim and fill in the project-specific bits (project name, providers, regions). Don't rewrite them from scratch. For `README.md`, `docs/ARCHITECTURE.md`, and `modules/*/README.md`, the `document` skill owns the structure — see **Documentation** above for the Terraform-specific sections to add.
 
 ## Observability
 

@@ -1,5 +1,19 @@
 # Kubernetes Resource Standards
 
+## Contents
+
+- [Security context](#security-context)
+- [Resource requests and limits](#resource-requests-and-limits)
+- [Probes](#probes)
+- [High availability](#high-availability)
+- [Labels and selectors](#labels-and-selectors)
+- [Storage](#storage)
+- [ConfigMaps and Secrets](#configmaps-and-secrets)
+- [Networking](#networking)
+- [TLS](#tls)
+- [Operator-managed resources](#operator-managed-resources)
+- [Common smells](#common-smells)
+
 The defaults below are the floor for any workload. Reviewing means checking against this list; authoring means starting from it.
 
 ## Security context

@@ -3,8 +3,14 @@
   "version": "0.1.0",
   "description": "Slash commands that adopt an engineering persona (SRE, architect, DBA, ...).",
   "author": {
-    "name": "pampatzoglou"
+    "name": "Pantelis Ampatzoglou",
+    "url": "https://github.com/pampatzoglou"
   },
   "license": "Apache-2.0",
-  "keywords": ["personas", "commands"]
+  "keywords": [
+    "personas",
+    "commands"
+  ],
+  "homepage": "https://github.com/pampatzoglou/mentor",
+  "repository": "https://github.com/pampatzoglou/mentor"
 }

@@ -1,7 +1,9 @@
 ---
 name: platform-review
-description: Entry point for reviewing an IaC/platform change. Use when reviewing a branch, PR, or diff that touches infrastructure-as-code or the delivery platform (Terraform, Helm, Kubernetes, ArgoCD/GitOps, GitHub Actions, Dockerfiles, devbox/Taskfile, Nix). This skill does not carry its own review rules — it detects which stacks the change touches and dispatches to the matching skills (helm, kubernetes, argo-applicationset, terraform, taskfile, devbox, skaffold, dockerfile, docker-compose, github-actions, ci, tagging, secrets, document), plus the built-in /code-review and /security-review. Each invoked skill owns its criteria; this one owns routing, the cross-stack seams between them, and the consolidated report.
-requires: [terraform, helm, kubernetes, argo-applicationset, skaffold, docker-compose, github-actions, ci, dockerfile, devbox, taskfile, tagging, secrets, document]
+description: 'Entry point for reviewing an IaC/platform change. Use when reviewing a branch, PR, or diff that touches infrastructure-as-code or the delivery platform (Terraform, Helm, Kubernetes, ArgoCD/GitOps, GitHub Actions, Dockerfiles, devbox/Taskfile, Nix). This skill does not carry its own review rules — it detects which stacks the change touches and dispatches to the matching skills (helm, kubernetes, argo-applicationset, terraform, taskfile, devbox, skaffold, dockerfile, docker-compose, github-actions, ci, tagging, secrets, document), plus the built-in /code-review and /security-review. Each invoked skill owns its criteria; this one owns routing, the cross-stack seams between them, and the consolidated report.'
+license: Apache-2.0
+metadata:
+  requires: terraform helm kubernetes argo-applicationset skaffold docker-compose github-actions ci dockerfile devbox taskfile tagging secrets document
 ---
 
 # Platform Review — Entry Point

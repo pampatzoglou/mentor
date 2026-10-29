@@ -1,6 +1,7 @@
 ---
 name: dockerfile
-description: Generate a 4-stage Dockerfile (base → build → develop/production) and a matching .dockerignore. base installs OS deps; build installs dependencies and compiles, ordered for layer caching; develop (FROM build) adds hot-reload tooling for the docker-compose/skaffold inner loop; production uses distroless/slim with an explicit non-root user, --chown on all COPYs, declared VOLUME entries, and a digest-locked base image. Dev-side stages are architecture-agnostic.
+description: 'Generate a 4-stage Dockerfile (base → build → develop/production) and a matching .dockerignore: layer-cache ordering, a develop stage for the docker-compose/skaffold inner loop, and a distroless/slim production stage with an explicit non-root user, --chown on every COPY, declared VOLUMEs and a digest-locked base image. Use when writing, reviewing or fixing a Dockerfile or .dockerignore, containerizing a service, choosing a base image, or acting on hadolint/trivy findings. Triggers on Dockerfile, .dockerignore, "containerize", "docker build", "multi-stage", distroless.'
+license: Apache-2.0
 ---
 
 # Generate Dockerfile
@@ -366,188 +367,28 @@ Never hardcode `amd64`, `x86_64`, or `arm64` in a URL or path.
 
 ## Read-only root filesystem — the writable-paths contract
 
-Production runs with a **read-only root filesystem**. The only writable locations are the ones declared as `VOLUME` in the Dockerfile — that list is the single source of truth for "what this app needs to write," and every runtime *mounts* it identically:
-
-| Declared in Dockerfile | docker-compose (dev) | Kubernetes (prod) |
-|---|---|---|
-| `VOLUME ["/tmp"]` | `tmpfs: [/tmp]` (or a named volume) | `emptyDir` mount at `/tmp` |
-| `VOLUME ["/var/cache/app"]` | `tmpfs`/named volume | `emptyDir` / PVC |
-| rootfs itself | `read_only: true` | `securityContext.readOnlyRootFilesystem: true` |
-
-### What `VOLUME` does and doesn't do
-
-`VOLUME` is a **declaration, not a mechanism** — and it is still required. Being clear about the split avoids expecting enforcement from the wrong layer:
-
-- **It does not create the mount in Kubernetes.** The kubelet ignores Dockerfile `VOLUME` entirely; the chart must declare a matching `emptyDir` (or PVC) by hand. The `VOLUME` line is what tells the chart author which ones to write — and what a reviewer diffs the chart against.
-- **It does create an anonymous volume under plain Docker.** `docker run` (and compose, for any declared path with no explicit mount) allocates one per `VOLUME`. Consequences: it is writable even under `read_only: true`, so a *declared* path never surfaces a missing compose `tmpfs:`; and the volumes accumulate — use `docker run --rm` and `docker compose down -v` during validation.
-- **What it buys:** the writable-path contract travels with the image. `docker inspect --format '{{json .Config.Volumes}}' <image>` answers "what does this thing write?" without reading the source, months later, from a chart repo that doesn't contain the Dockerfile. That breadcrumb is the point — declare every writable path even though nothing reads the list automatically.
-- **What actually enforces it:** `readOnlyRootFilesystem: true` in the pod `securityContext` plus explicit mounts. An *undeclared* path fails there, loudly, which is the behaviour worth having.
-
-### Applying it
-
-- **Enforced in production.** The chart sets `readOnlyRootFilesystem: true` (see the `helm` skill's `defaults/values.yaml`) and mounts an `emptyDir` for each declared VOLUME. A write to an undeclared path crashes the container — that's the point: it forces every writable path to be explicit and reviewed.
-- **Recommended in dev.** Run `develop`/compose with `read_only: true` and the same paths mounted, so a path the app writes but nobody declared surfaces on a laptop, not in the cluster. Hot-reload tools that write belong on the bind-mounted source (kept writable); everything else stays read-only.
-- **Find the paths in Step 1.7** — temp files, caches, framework scratch dirs, on-disk logs. Each becomes one `VOLUME`. Keep the set minimal: every writable mount is attack surface and state to manage. If the app can be told to write only to `/tmp`, prefer that over many scattered VOLUMEs.
-
-The payoff: dev and prod fail the same way. If a read-only rootfs breaks something, you hit it identically on compose and in k8s — and the fix is one reviewed change in three places that a reader can check against each other, starting from the `VOLUME` line.
+Production runs with a read-only root filesystem. Every path the app writes is declared as a
+`VOLUME` in the Dockerfile — that list is the single source of truth — and mounted identically
+everywhere: `tmpfs`/named volume plus `read_only: true` in compose, `emptyDir`/PVC plus
+`readOnlyRootFilesystem: true` in Kubernetes. `VOLUME` declares, it does not enforce; read
+[read-only-rootfs.md](read-only-rootfs.md) for what it does and doesn't do and how to apply it.
 
 ---
 
 ## Step 3: write the .dockerignore
 
-The `.dockerignore` applies to the entire build context. Since stages use explicit `COPY` commands (never `COPY . .`), the `.dockerignore` serves two purposes:
-1. **Speed** — exclude large generated directories that slow context transfer.
-2. **Security** — prevent secrets from entering the context even accidentally.
-
-```dockerignore
-# Version control
-.git
-.gitignore
-
-# IDE and editor state
-.vscode
-.idea
-*.swp
-*.swo
-.DS_Store
-
-# Environment files and local secret material — never let these into the context
-.env
-.env.*
-*.env
-.envrc
-secrets/                  # the `secrets` skill's local Vault pull lands here
-*.pem
-*.key
-!.env.example
-!.env.sample
-
-# Generated build artifacts (the Dockerfile rebuilds these)
-# Go
-bin/
-# Node
-node_modules/
-dist/
-.next/
-out/
-# Python
-__pycache__/
-*.pyc
-*.pyo
-.venv/
-venv/
-dist/
-*.egg-info/
-# Rust
-target/
-# Java
-target/
-*.jar
-*.war
-build/
-
-# Local dev tooling (not needed inside the image)
-devbox.json
-devbox.lock
-.devbox/
-Taskfile.yaml
-Taskfile.yml
-skaffold.yaml
-docker-compose*.yaml
-.github/
-
-# Test output and coverage
-coverage/
-*.coverprofile
-htmlcov/
-.pytest_cache/
-.nyc_output/
-
-# Docs
-docs/
-*.md
-!README.md
-```
-
-**The block above is a menu, not a file to paste.** It lists every language's artifacts; the `.dockerignore` you emit keeps only the sections that apply to *this* project. A Go service has no `node_modules/` or `.venv/` to exclude, so those lines are noise that makes the real entries harder to review.
-
-**Keep the file lean.** Only exclude things that exist in directories being COPY-ed or that are large enough to matter for context transfer time. Don't exclude directories the Dockerfile never copies — that's redundant noise.
+The `.dockerignore` serves speed (keep large generated dirs out of the context) and security
+(keep secrets out even by accident). Read [dockerignore.md](dockerignore.md) for the section menu;
+emit only the sections that apply to this project.
 
 ---
 
 ## Step 4: build, run, validate
 
-### 4.1 Build both targets
-
-```bash
-# Develop target
-docker build --target develop -t my-service:develop .
-
-# Production target (no --target needed — last stage is the default)
-docker build -t my-service:latest .
-```
-
-### 4.2 Verify production image
-
-```bash
-docker run --rm my-service:latest                          # CLI tools / one-shot
-docker run -d --name test my-service:latest && sleep 5    # services
-docker inspect --format='{{.State.Status}}' test
-docker inspect --format='{{.State.ExitCode}}' test
-docker logs test 2>&1
-```
-
-**Expected by application type:**
-- Services: container still running after 5 seconds
-- CLI tools / one-shot: exited with code 0
-
-### 4.3 Verify develop image
-
-```bash
-# Confirm the image starts correctly with a bind-mounted source
-docker run --rm -v $(pwd):/app my-service:develop
-```
-
-### 4.4 Lint (if hadolint is available)
-
-```bash
-hadolint Dockerfile
-```
-
-Evaluate each finding — some may be intentional. Fix or note the reason before declaring done.
-
-### 4.5 Security scan (if trivy is available)
-
-```bash
-trivy image --severity HIGH,CRITICAL my-service:latest
-```
-
-HIGH/CRITICAL findings in the base image → consider a different image variant. Findings in application dependencies → note for the user but don't block (dependency updates are outside Dockerfile scope).
-
-### 4.6 Iterate
-
-Maximum 5 iterations before stopping to report state to the user.
-
-| Symptom | Likely cause |
-|---|---|
-| Missing file in production | `COPY --from=build` path wrong, or artifact wasn't built in the build stage |
-| Permission denied | File is owned by root; `--chown=app:app` was missing or path mismatch |
-| Binary not found at runtime | System dep present in `base`/`develop` but missing in production image |
-| Hot reload not working | Bind-mount path doesn't match `WORKDIR` |
-| Architecture error | Hardcoded arch in a download URL or binary path |
-| `/tmp` not writable | `VOLUME ["/tmp"]` missing; in k8s, add `emptyDir` mount |
-
-### 4.7 Cleanup
-
-Always clean up after validation, whether successful or not:
-
-```bash
-docker stop test 2>/dev/null || true
-docker rm test 2>/dev/null || true
-docker rmi my-service:develop my-service:latest 2>/dev/null || true
-```
-
-Only present the Dockerfile to the user after all validation steps pass and cleanup is complete.
+Build both targets, verify the production and develop images, lint with hadolint and scan with
+trivy when available, iterate (max 5 rounds), and clean up. Follow [validation.md](validation.md)
+step by step, including its symptom → cause table. Only present the Dockerfile after every step
+passes and cleanup is done.
 
 ---
 
@@ -584,34 +425,8 @@ Present the improved files with a summary:
 
 ## Example workflows
 
-### New Dockerfile (no existing file)
-
-1. **Check**: "No existing Dockerfile found. Will generate a new 4-stage one."
-2. **Explore**: "Finding dependency manifest... found `go.mod`. Reading it for the Go version and module path."
-3. **Identify**: "Go 1.23 project. Entry point is `cmd/server/main.go`. Binds to `$PORT` (default 8080). Writes temp files under `/tmp`."
-4. **Build requirements**: "No external system deps called at runtime. Single static binary output to `./server`."
-5. **Stage design**: "Base: `golang:1.23-alpine`. Build: full Go toolchain — `go mod download` (cached), then `go build -o /app/server`. Develop: `FROM build` + `air` for hot reload. Production: `gcr.io/distroless/static-debian12:nonroot` pinned by digest, `COPY --from=build` with `--chown=65532:65532`, `VOLUME [\"/tmp\"]`."
-6. **Generate**: "Writing Dockerfile and .dockerignore."
-7. **Build & test**: "Building develop target... building production target... running production container... verifying it stays up..."
-8. **Iterate** (if needed): "Container exited — logs show `/tmp` not writable. Adding `VOLUME [\"/tmp\"]` and retrying."
-9. **Cleanup & present**: "Validation passed. Cleanup done. Here are the files."
-
-### Improving existing Dockerfile
-
-1. **Check**: "Found existing Dockerfile. Reading it..."
-2. **Analyse project**: Same exploration as above to understand what the Dockerfile should do.
-3. **Evaluate**: "Checking against skill patterns..."
-   - "❌ Two stages (builder + runtime) — missing the `build`/`develop` split for layer caching and the docker-compose/skaffold inner loop"
-   - "❌ `COPY . .` in builder — should be explicit"
-   - "❌ Files copied without `--chown` — owned by root in production"
-   - "❌ No `VOLUME` — app writes to `/tmp` at startup"
-   - "✅ Non-root USER directive already present"
-   - "✅ Pinned image tags"
-4. **Preserve**: "Keeping the custom CA cert installation in base — it's intentional."
-5. **Improve**: "Adding `build` + `develop` stages, replacing `COPY . .`, adding `--chown`, adding `VOLUME`, digest-locking the production base."
-6. **Build & test**: "Building both targets... running production container... checking logs..."
-7. **Iterate** (if needed): "Production container exits — `--chown` uid doesn't match USER. Fixing and retrying."
-8. **Cleanup & present**: "Validation passed. Here are the improvements."
+Worked narrations for a new Dockerfile and for improving an existing one are in
+[examples.md](examples.md).
 
 ---
 

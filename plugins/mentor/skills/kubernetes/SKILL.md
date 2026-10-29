@@ -1,7 +1,9 @@
 ---
 name: kubernetes
-description: Use this skill whenever a task involves Kubernetes manifests, Helm charts, or GitOps with ArgoCD. Triggers include authoring or editing Helm charts (Chart.yaml, values.yaml, templates/*.yaml), reviewing or fixing Kubernetes YAML (Deployment, StatefulSet, Service, Ingress, CRDs), debugging failing pods, PVCs, or ArgoCD application sync, and writing operator-managed resources (CNPG, Kafka/Redpanda, ClickHouse). Also use this for any request mentioning "k8s", "kubectl", "helm template", "sync wave", "PDB", "HPA", "NetworkPolicy", or "argocd" — even when the user does not explicitly say "Kubernetes".
-requires: [helm, devbox, taskfile]
+description: 'Review and troubleshoot Kubernetes resources and GitOps with ArgoCD. Use when reviewing or fixing Kubernetes YAML (Deployment, StatefulSet, Service, Ingress, CRDs), checking resource standards (securityContext, probes, requests/limits, PDB, HPA, NetworkPolicy), debugging failing pods, PVCs, DNS or ArgoCD sync, or writing operator-managed resources (CNPG, Kafka/Redpanda/Strimzi, ClickHouse). Triggers on "k8s", "kubectl", "CrashLoopBackOff", "sync wave", "PDB", "HPA", "NetworkPolicy", "argocd" — even when the user does not say "Kubernetes". Authoring chart files (Chart.yaml, values.yaml, templates/) belongs to the helm skill.'
+license: Apache-2.0
+metadata:
+  requires: helm devbox taskfile
 ---
 
 # Kubernetes

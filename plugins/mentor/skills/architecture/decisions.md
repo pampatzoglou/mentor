@@ -1,5 +1,14 @@
 # Decisions — Trade-offs, Reversibility, and ADRs
 
+## Contents
+
+- [The trade-off table](#the-trade-off-table)
+- [Reversibility](#reversibility)
+- [Deciding now versus deferring](#deciding-now-versus-deferring)
+- [Architecture Decision Records](#architecture-decision-records)
+- [Disagreement](#disagreement)
+- [Anti-patterns](#anti-patterns)
+
 A decision is finished when someone who was not in the room can tell what was chosen, what it
 cost, and what would change it. Anything short of that is a preference that happened to win.
 
